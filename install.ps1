@@ -114,7 +114,14 @@ foreach (`$name in 'Root', 'TrustedPublisher') {
     # also waits for child processes, and Setup starts the tray app, which
     # never exits, so the script would hang.
     $proc = Start-Process $setup -PassThru
+    $null = $proc.Handle # keep the handle open, or ExitCode reads as empty afterwards
     $proc.WaitForExit()
     if ($downloaded) { Remove-Item $setup -Force -ErrorAction SilentlyContinue }
+    if ($proc.ExitCode -ne 0) {
+        # Setup has already shown why (e.g. not enough disk space); details in
+        # %LocalAppData%\velopack\velopack.log.
+        Write-Host "    El instalador fallo (codigo $($proc.ExitCode)). Detalles: $env:LOCALAPPDATA\velopack\velopack.log" -ForegroundColor Red
+        return
+    }
     Write-Host '    Listo. LabelPrinter quedo en la bandeja del sistema y se abrira al iniciar Windows.' -ForegroundColor Green
 } $CertPath $SetupPath
