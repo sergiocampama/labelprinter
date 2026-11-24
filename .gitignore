@@ -1,0 +1,14 @@
+## Build output
+bin/
+obj/
+
+## Velopack release artifacts (uploaded to GitHub releases, not source control)
+deploy/Releases/
+
+## Visual Studio / Rider
+.vs/
+*.user
+.idea/
+
+## Never commit signing keys (the encrypted deploy/signing/*.pfx.enc is fine)
+*.pfx
